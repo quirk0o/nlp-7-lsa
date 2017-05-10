@@ -10,10 +10,23 @@ DOCUMENT_SEP = '#\d+'
 
 
 class Corpus(object):
-    def get(self, key):
+    def __init__(self):
+        self.__documents = None
+
+    def __load_documents(self):
         with codecs.open(CORPUS_FILENAME, encoding='utf-8') as corpus_file:
             documents = re.split(DOCUMENT_SEP, corpus_file.read())
-            return documents[key]
+            self.__documents = documents
+
+    def get(self, key):
+        if self.__documents is None:
+            self.__load_documents()
+            return self.__documents[key]
+
+    def all_ids(self):
+        if self.__documents is None:
+            self.__load_documents()
+        return range(0, len(self.__documents))
 
     def __iter__(self):
         with codecs.open(CORPUS_FILENAME, encoding='utf-8') as corpus_file:
